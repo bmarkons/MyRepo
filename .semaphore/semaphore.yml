@@ -1,62 +1,30 @@
 version: v1.0
-name: Rails 5 app
+name: Initial Pipeline
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Setup
+  - name: 'Block #1'
     task:
-      prologue:
-        commands:
-          - checkout
-          - sem-version ruby 2.6.0
-          - cache restore
       jobs:
-        - name: bundle
+        - name: 'Job #1'
           commands:
-            - bundle install --deployment -j 4 --path vendor/bundle
-  - name: Code scanning
-    task:
-      prologue:
-        commands:
-          - checkout
-          - sem-version ruby 2.6.0
-          - cache restore
-          - bundle install --deployment --path vendor/bundle
-      jobs:
-        - name: check style + security
+            - checkout
+            - ls
+        - name: 'Job #2'
           commands:
-            - bundle exec rubocop
-            - bundle exec brakeman
-  - name: Unit tests
-    task:
-      prologue:
-        commands:
-          - checkout
-          - cache restore
-          - sem-service start postgres
-          - sem-version ruby 2.6.0
-          - bundle install --deployment --path vendor/bundle
-          - 'bundle exec rake db:setup'
-      jobs:
-        - name: RSpec - model tests
+            - checkout
+            - ls
+        - name: 'Job #3'
           commands:
-            - bundle exec rspec spec/models
-        - name: RSpec - controller tests
+            - checkout
+            - ls
+        - name: 'Job #4'
           commands:
-            - bundle exec rspec spec/controllers
-  - name: Integration tests
-    task:
-      prologue:
-        commands:
-          - checkout
-          - cache restore
-          - sem-service start postgres
-          - sem-version ruby 2.6.0
-          - bundle install --deployment --path vendor/bundle
-          - 'bundle exec rake db:setup'
-      jobs:
-        - name: RSpec - feature specs
+            - checkout
+            - ls
+        - name: 'Job #5'
           commands:
-            - bundle exec rspec spec/features
+            - checkout
+            - ls
