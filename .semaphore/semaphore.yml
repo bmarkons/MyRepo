@@ -1,15 +1,48 @@
 version: v1.0
-name: Swift
+name: Fan-in / Fan-out
 agent:
   machine:
-    type: a1-standard-4
-    os_image: macos-mojave-xcode11
+    type: e1-standard-2
+    os_image: ubuntu1804
 blocks:
-  - name: Tests
+  - name: Build
+    dependencies: []
     task:
       jobs:
-        - name: swift test
+        - name: build
           commands:
             - checkout
-            - swift build -v
-            - swift test -v
+  - name: Unit tests
+    dependencies:
+      - Build
+    task:
+      jobs:
+        - name: test
+          commands:
+            - checkout
+  - name: Integration tests
+    dependencies:
+      - Build
+    task:
+      jobs:
+        - name: test
+          commands:
+            - checkout
+  - name: e2e tests
+    dependencies:
+      - Build
+    task:
+      jobs:
+        - name: test
+          commands:
+            - checkout
+  - name: Release
+    dependencies:
+      - Integration tests
+      - Unit tests
+      - e2e tests
+    task:
+      jobs:
+        - name: release
+          commands:
+            - checkout
